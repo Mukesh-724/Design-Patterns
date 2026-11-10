@@ -1,0 +1,845 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PatternLab - Design Patterns</title>
+
+<style>
+:root {
+  --bg: #0b1020;
+  --panel: #141f35;
+  --border: #293b59;
+  --text: #eef3ff;
+  --muted: #9aabc7;
+  --blue: #829cff;
+  --cyan: #6ee7dc;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+.layout { display: grid; grid-template-columns: 240px 1fr; }
+aside {
+  background: #101a2e;
+  min-height: 100vh;
+  padding: 25px 18px;
+  border-right: 1px solid var(--border);
+}
+.logo { font-size: 25px; font-weight: bold; color: var(--cyan); }
+nav { margin-top: 35px; }
+nav a {
+  display: block;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 8px;
+}
+nav a:hover { background: #243653; color: white; }
+main { padding: 35px; max-width: 1250px; width: 100%; margin: auto; }
+.hero {
+  padding: 45px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: linear-gradient(120deg,#1b3155,#111a2e);
+}
+.hero h1 { font-size: 45px; }
+.hero p { color: var(--muted); max-width: 650px; }
+h2 { margin-top: 45px; }
+h3 { margin-top: 5px; }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 15px;
+}
+.card,.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.card p,.muted { color: var(--muted); }
+button {
+  border: none;
+  background: var(--blue);
+  color: #07101e;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px 3px 5px 0;
+}
+button:hover { opacity: .85; }
+.secondary { background: #304363; color: white; }
+.danger { background: #a64455; color: white; }
+input,select {
+  display: block;
+  width: 100%;
+  padding: 11px;
+  margin: 6px 0 13px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: #0b1425;
+  color: white;
+}
+label { color: var(--muted); font-size: 13px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.row > div { flex: 1; min-width: 130px; }
+.output {
+  background: #091222;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 12px;
+  min-height: 50px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #a9c5e8;
+}
+.status {
+  background: #15352f;
+  color: #9bf0d0;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 8px;
+}
+table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+th,td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+th { color: var(--cyan); }
+.menu { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.food { background: #0b1425; padding: 12px; border-radius: 10px; }
+footer { margin-top: 50px; color: var(--muted); border-top: 1px solid var(--border); padding: 20px; }
+@media(max-width:850px) {
+  .layout { grid-template-columns: 1fr; }
+  aside { min-height: auto; }
+  nav { margin-top: 10px; }
+  nav a { display: inline-block; }
+  main { padding: 18px; }
+  .cards { grid-template-columns: 1fr; }
+  .hero { padding: 25px; }
+  .hero h1 { font-size: 32px; }
+  .menu { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+
+<aside>
+  <div class="logo">PatternLab</div>
+  <p class="muted">Interactive Learning</p>
+  <nav>
+    <a href="#home">Dashboard</a>
+    <a href="#singleton">Singleton</a>
+    <a href="#library">Library System</a>
+    <a href="#factory">Factory Method</a>
+    <a href="#food">SmartFood</a>
+    <a href="#about">About</a>
+  </nav>
+</aside>
+
+<main>
+
+<section class="hero" id="home">
+  <p style="color:#6ee7dc">INTERACTIVE DESIGN PATTERNS</p>
+  <h1>Understand the Pattern.<br>See it in Action.</h1>
+  <p>Learn software design patterns through interactive examples built using HTML, CSS and JavaScript.</p>
+  <button onclick="document.getElementById('singleton').scrollIntoView()">Explore Patterns</button>
+</section>
+
+<h2>Learning Modules</h2>
+<div class="cards">
+  <div class="card">
+    <h3>01. Singleton</h3>
+    <p>Ensures only one instance of a class exists.</p>
+    <a href="#singleton">Explore →</a>
+  </div>
+  <div class="card">
+    <h3>02. Factory Method</h3>
+    <p>Creates objects based on the selected type.</p>
+    <a href="#factory">Explore →</a>
+  </div>
+  <div class="card">
+    <h3>03. Behavioral Patterns</h3>
+    <p>Observer, Strategy and Command patterns.</p>
+    <a href="#food">Explore →</a>
+  </div>
+</div>
+
+<!-- SINGLETON LOGGER -->
+<section id="singleton">
+<h2>01. Singleton Pattern</h2>
+<div class="panel">
+  <h3>Logger Implementation</h3>
+  <p class="muted">Only one Logger object is created and reused.</p>
+  <button onclick="createLogger()">Create Logger Instance</button>
+  <button class="secondary" onclick="addLog()">Add Log Message</button>
+  <div class="output" id="loggerOutput">Waiting for action...</div>
+  <div class="status" id="loggerStatus">Logger not created.</div>
+</div>
+</section>
+
+<!-- LIBRARY MANAGEMENT -->
+<section id="library">
+<h2>Singleton - Library Management System</h2>
+<div class="panel">
+  <h3>Add Book</h3>
+  <div class="row">
+    <div><label>Book ID</label><input id="bookId" placeholder="B101"></div>
+    <div><label>Book Title</label><input id="bookTitle" placeholder="Design Patterns"></div>
+  </div>
+  <div class="row">
+    <div><label>Author</label><input id="bookAuthor" placeholder="Erich Gamma"></div>
+    <div><label>Quantity</label><input id="bookQty" type="number" min="1" value="2"></div>
+  </div>
+  <button onclick="addBook()">Add Book</button>
+
+  <h3>Register Member</h3>
+  <div class="row">
+    <div><label>Member ID</label><input id="memberId" placeholder="M101"></div>
+    <div><label>Member Name</label><input id="memberName" placeholder="Student Name"></div>
+  </div>
+  <button onclick="addMember()">Register Member</button>
+
+  <h3>Issue and Return Book</h3>
+  <label>Select Book</label><select id="issueBook"></select>
+  <label>Select Member</label><select id="issueMember"></select>
+  <button onclick="issueBook()">Issue Book</button>
+  <label>Active Loan</label><select id="returnLoan"></select>
+  <button class="secondary" onclick="returnBook()">Return Book</button>
+
+  <div class="status" id="libMessage">Library manager ready.</div>
+
+  <h3>Books</h3>
+  <table>
+    <thead><tr><th>ID</th><th>Title</th><th>Available</th></tr></thead>
+    <tbody id="booksBody"></tbody>
+  </table>
+
+  <h3>Members</h3>
+  <table>
+    <thead><tr><th>ID</th><th>Name</th></tr></thead>
+    <tbody id="membersBody"></tbody>
+  </table>
+
+  <h3>Transactions</h3>
+  <table>
+    <thead><tr><th>ID</th><th>Book</th><th>Member</th><th>Status</th></tr></thead>
+    <tbody id="loansBody"></tbody>
+  </table>
+  <button onclick="verifySingleton()">Verify Singleton</button>
+</div>
+</section>
+
+<!-- FACTORY METHOD -->
+<section id="factory">
+<h2>02. Factory Method Pattern</h2>
+<div class="panel">
+  <h3>Vehicle Rental Management</h3>
+  <p class="muted">Select a vehicle to create its object using the appropriate factory.</p>
+  <div class="cards">
+    <div class="card"><h3>🏍 Bike</h3>₹500/day</div>
+    <div class="card"><h3>🚗 Car</h3>₹2,000/day</div>
+    <div class="card"><h3>🚌 Bus</h3>₹5,000/day</div>
+  </div>
+
+  <label>Customer Name</label>
+  <input id="customer" placeholder="Enter your name">
+  <label>Vehicle Type</label>
+  <select id="vehicle">
+    <option value="">Select Vehicle</option>
+    <option value="bike">Bike</option>
+    <option value="car">Car</option>
+    <option value="bus">Bus</option>
+  </select>
+  <label>Rental Days</label>
+  <input id="days" type="number" min="1" value="3">
+
+  <button onclick="bookVehicle()">Calculate & Book</button>
+  <div class="output" id="rentalResult">Booking details will appear here.</div>
+</div>
+</section>
+
+<!-- OBSERVER STRATEGY COMMAND -->
+<section id="food">
+<h2>03. SmartFood - Behavioral Patterns</h2>
+<div class="panel">
+  <h3>Food Delivery Management System</h3>
+  <p class="muted">Observer + Strategy + Command patterns.</p>
+
+  <h3>Restaurant Menu</h3>
+  <div class="menu" id="menu"></div>
+
+  <h3>Shopping Cart</h3>
+  <div id="cart" class="output">Cart is empty.</div>
+
+  <label>Delivery Strategy</label>
+  <select id="strategy" onchange="renderCart()">
+    <option value="standard">Standard - ₹30</option>
+    <option value="express">Express - ₹60</option>
+    <option value="free">Free - ₹0 (₹300+ order)</option>
+  </select>
+
+  <p>Subtotal: <b id="subtotal">₹0</b></p>
+  <p>Delivery Fee: <b id="deliveryFee">₹0</b></p>
+  <p>Total: <b id="total">₹0</b></p>
+
+  <button onclick="executeCommand('place')">Place Order</button>
+  <button class="secondary" onclick="executeCommand('track')">Track Order</button>
+  <button class="danger" onclick="executeCommand('cancel')">Cancel Order</button>
+
+  <div class="status" id="foodStatus">Restaurant is ready.</div>
+  <h3>Activity Log</h3>
+  <div class="output" id="foodLog">SmartFood initialized.</div>
+</div>
+</section>
+
+<section id="about">
+<h2>About This Project</h2>
+<div class="panel">
+  <p>This website demonstrates important software engineering design patterns.</p>
+  <ul>
+    <li>Singleton - Logger and Library Management.</li>
+    <li>Factory Method - Vehicle Rental.</li>
+    <li>Observer - Delivery Agent Notifications.</li>
+    <li>Strategy - Delivery Fee Calculation.</li>
+    <li>Command - Place, Track and Cancel Orders.</li>
+  </ul>
+  <p class="muted">Educational project built using HTML, CSS and JavaScript.</p>
+</div>
+</section>
+
+<footer>PatternLab | Design Patterns Interactive Learning</footer>
+</main>
+</div>
+
+<script>
+// ==================================
+// SINGLETON LOGGER
+// ==================================
+
+const Logger = (function() {
+  let instance;
+
+  function createInstance() {
+    const logs = [];
+    return {
+      add(message) {
+        logs.push(message);
+        return logs;
+      },
+      getLogs() { return logs; }
+    };
+  }
+
+  return {
+    getInstance() {
+      if (!instance) instance = createInstance();
+      return instance;
+    },
+    exists() { return !!instance; }
+  };
+})();
+
+let logger = null;
+
+function createLogger() {
+  const existed = Logger.exists();
+  logger = Logger.getInstance();
+
+  document.getElementById("loggerStatus").textContent =
+    existed ? "Existing Logger instance reused." :
+    "New Logger instance created.";
+
+  addLoggerMessage(existed ?
+    "Existing Logger reused." : "New Logger created.");
+}
+
+function addLoggerMessage(message) {
+  const out = document.getElementById("loggerOutput");
+  if (out.textContent === "Waiting for action...") out.textContent = "";
+  out.textContent += "\n" + message;
+}
+
+function addLog() {
+  if (!logger) {
+    addLoggerMessage("Create Logger instance first!");
+    return;
+  }
+  const message = "Log entry at " + new Date().toLocaleTimeString();
+  logger.add(message);
+  addLoggerMessage(message);
+}
+
+// ==================================
+// SINGLETON LIBRARY MANAGER
+// ==================================
+
+const LibraryManager = (function() {
+  let instance;
+
+  function createManager() {
+    const books = new Map();
+    const members = new Map();
+    const transactions = [];
+    let nextId = 1;
+
+    return {
+      addBook(id,title,author,qty) {
+        if (!id || !title || !author) throw Error("Complete all book fields.");
+        if (books.has(id)) throw Error("Book ID already exists.");
+        if (!Number.isInteger(qty) || qty < 1) throw Error("Enter valid quantity.");
+        books.set(id,{id,title,author,total:qty,available:qty});
+        return "Book added successfully.";
+      },
+
+      addMember(id,name) {
+        if (!id || !name) throw Error("Enter member details.");
+        if (members.has(id)) throw Error("Member ID already exists.");
+        members.set(id,{id,name});
+        return "Member registered successfully.";
+      },
+
+      issue(bookId,memberId) {
+        const book = books.get(bookId);
+        if (!book) throw Error("Select a valid book.");
+        if (!members.has(memberId)) throw Error("Select a registered member.");
+        if (book.available < 1) throw Error("No copies available.");
+        if (transactions.some(t => t.bookId === bookId &&
+          t.memberId === memberId && !t.returned))
+          throw Error("Member already has this book.");
+
+        book.available--;
+        transactions.push({
+          id:nextId++,bookId,memberId,returned:false
+        });
+        return "Book issued successfully.";
+      },
+
+      returnBook(id) {
+        const t = transactions.find(x => x.id === id);
+        if (!t || t.returned) throw Error("Select an active loan.");
+        t.returned = true;
+        books.get(t.bookId).available++;
+        return "Book returned successfully.";
+      },
+
+      getBooks() { return [...books.values()]; },
+      getMembers() { return [...members.values()]; },
+      getTransactions() { return transactions; }
+    };
+  }
+
+  return {
+    getInstance() {
+      if (!instance) instance = createManager();
+      return instance;
+    }
+  };
+})();
+
+const library = LibraryManager.getInstance();
+
+function showLibraryMessage(msg) {
+  document.getElementById("libMessage").textContent = msg;
+}
+
+function libraryOperation(fn) {
+  try {
+    showLibraryMessage(fn());
+    refreshLibrary();
+  } catch(e) {
+    showLibraryMessage("Error: " + e.message);
+  }
+}
+
+function addBook() {
+  libraryOperation(() => library.addBook(
+    document.getElementById("bookId").value.trim(),
+    document.getElementById("bookTitle").value.trim(),
+    document.getElementById("bookAuthor").value.trim(),
+    Number(document.getElementById("bookQty").value)
+  ));
+}
+
+function addMember() {
+  libraryOperation(() => library.addMember(
+    document.getElementById("memberId").value.trim(),
+    document.getElementById("memberName").value.trim()
+  ));
+}
+
+function issueBook() {
+  libraryOperation(() => library.issue(
+    document.getElementById("issueBook").value,
+    document.getElementById("issueMember").value
+  ));
+}
+
+function returnBook() {
+  libraryOperation(() => library.returnBook(
+    Number(document.getElementById("returnLoan").value)
+  ));
+}
+
+function verifySingleton() {
+  const a = LibraryManager.getInstance();
+  const b = LibraryManager.getInstance();
+  showLibraryMessage("Singleton verified: a === b is " + (a === b));
+}
+
+function fillSelect(id,items,value,label) {
+  const select = document.getElementById(id);
+  const previous = select.value;
+  select.replaceChildren();
+
+  items.forEach(item => {
+    const option = document.createElement("option");
+    option.value = value(item);
+    option.textContent = label(item);
+    select.appendChild(option);
+  });
+
+  if ([...select.options].some(o => o.value === previous))
+    select.value = previous;
+}
+
+function renderTable(id,items,fields) {
+  const body = document.getElementById(id);
+  body.replaceChildren();
+
+  items.forEach(item => {
+    const row = body.insertRow();
+    fields.forEach(field => {
+      const cell = row.insertCell();
+      cell.textContent = field(item);
+    });
+  });
+}
+
+function refreshLibrary() {
+  const books = library.getBooks();
+  const members = library.getMembers();
+  const transactions = library.getTransactions();
+
+  renderTable("booksBody",books,[
+    x=>x.id,x=>x.title,x=>x.available
+  ]);
+
+  renderTable("membersBody",members,[
+    x=>x.id,x=>x.name
+  ]);
+
+  renderTable("loansBody",transactions,[
+    x=>x.id,x=>x.bookId,x=>x.memberId,
+    x=>x.returned?"Returned":"Issued"
+  ]);
+
+  fillSelect("issueBook",books.filter(x=>x.available>0),
+    x=>x.id,x=>x.title+" ("+x.available+")");
+
+  fillSelect("issueMember",members,x=>x.id,x=>x.name);
+
+  fillSelect("returnLoan",transactions.filter(x=>!x.returned),
+    x=>x.id,x=>"#"+x.id+" - "+x.bookId+"/"+x.memberId);
+}
+
+refreshLibrary();
+
+// ==================================
+// FACTORY METHOD
+// ==================================
+
+class Vehicle {
+  calculateRental(days) {
+    return this.getDailyRate() * days;
+  }
+}
+
+class Bike extends Vehicle {
+  getDailyRate() { return 500; }
+  getType() { return "Bike"; }
+}
+
+class Car extends Vehicle {
+  getDailyRate() { return 2000; }
+  getType() { return "Car"; }
+}
+
+class Bus extends Vehicle {
+  getDailyRate() { return 5000; }
+  getType() { return "Bus"; }
+}
+
+class BikeFactory {
+  createVehicle() { return new Bike(); }
+}
+class CarFactory {
+  createVehicle() { return new Car(); }
+}
+class BusFactory {
+  createVehicle() { return new Bus(); }
+}
+
+function chooseFactory(type) {
+  const factories = {
+    bike:new BikeFactory(),
+    car:new CarFactory(),
+    bus:new BusFactory()
+  };
+  return factories[type];
+}
+
+function bookVehicle() {
+  const name = document.getElementById("customer").value.trim();
+  const type = document.getElementById("vehicle").value;
+  const days = Number(document.getElementById("days").value);
+  const result = document.getElementById("rentalResult");
+
+  if (!name || !type || !Number.isInteger(days) ||
+      days < 1 || days > 365) {
+    result.textContent = "Enter valid customer and booking details.";
+    return;
+  }
+
+  const factory = chooseFactory(type);
+  const vehicle = factory.createVehicle();
+  const total = vehicle.calculateRental(days);
+
+  result.textContent =
+    "BOOKING CONFIRMED (DEMO)\n" +
+    "Customer: " + name + "\n" +
+    "Vehicle: " + vehicle.getType() + "\n" +
+    "Factory: " + factory.constructor.name + "\n" +
+    "Days: " + days + "\n" +
+    "Daily Rate: ₹" + vehicle.getDailyRate() + "\n" +
+    "Total: ₹" + total;
+}
+
+// ==================================
+// SMARTFOOD
+// OBSERVER + STRATEGY + COMMAND
+// ==================================
+
+const menuItems = [
+  {id:1,name:"Veg Burger",price:120},
+  {id:2,name:"Paneer Wrap",price:150},
+  {id:3,name:"Masala Dosa",price:100},
+  {id:4,name:"Chicken Biryani",price:220},
+  {id:5,name:"Fresh Lime Soda",price:60},
+  {id:6,name:"Chocolate Brownie",price:90}
+];
+
+const cart = new Map();
+let activeOrder = null;
+let orderNumber = 1001;
+
+function logFood(message) {
+  const log = document.getElementById("foodLog");
+  log.textContent += "\n" + message;
+  log.scrollTop = log.scrollHeight;
+}
+
+// OBSERVER PATTERN
+
+class DeliveryAgent {
+  constructor(name) { this.name = name; }
+  update(order) {
+    logFood("Observer: " + this.name +
+      " notified about order #" + order.id);
+  }
+}
+
+class Restaurant {
+  constructor() { this.agents = []; }
+  subscribe(agent) { this.agents.push(agent); }
+  notify(order) {
+    this.agents.forEach(agent => agent.update(order));
+  }
+}
+
+const restaurant = new Restaurant();
+restaurant.subscribe(new DeliveryAgent("Agent A"));
+restaurant.subscribe(new DeliveryAgent("Agent B"));
+
+// STRATEGY PATTERN
+
+const strategies = {
+  standard:{name:"Standard",fee:30},
+  express:{name:"Express",fee:60},
+  free:{name:"Free",fee:0}
+};
+
+function rupees(value) {
+  return "₹" + value.toLocaleString("en-IN");
+}
+
+function renderMenu() {
+  const menu = document.getElementById("menu");
+  menu.replaceChildren();
+
+  menuItems.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "food";
+
+    const title = document.createElement("b");
+    title.textContent = item.name;
+
+    const price = document.createElement("p");
+    price.textContent = rupees(item.price);
+
+    const button = document.createElement("button");
+    button.textContent = "Add to Cart";
+    button.onclick = () => {
+      cart.set(item.id,(cart.get(item.id)||0)+1);
+      renderCart();
+    };
+
+    div.append(title,price,button);
+    menu.appendChild(div);
+  });
+}
+
+function renderCart() {
+  const cartBox = document.getElementById("cart");
+  cartBox.replaceChildren();
+
+  let subtotal = 0;
+
+  if (cart.size === 0) {
+    cartBox.textContent = "Cart is empty.";
+  }
+
+  cart.forEach((qty,id) => {
+    const item = menuItems.find(x=>x.id===id);
+    subtotal += item.price * qty;
+
+    const line = document.createElement("p");
+    line.textContent = item.name + " x " + qty +
+      " = " + rupees(item.price*qty);
+    cartBox.appendChild(line);
+  });
+
+  const strategy = strategies[
+    document.getElementById("strategy").value
+  ];
+
+  const fee = strategy.name === "Free" && subtotal < 300
+    ? 30 : strategy.fee;
+
+  document.getElementById("subtotal").textContent =
+    rupees(subtotal);
+
+  document.getElementById("deliveryFee").textContent =
+    rupees(subtotal ? fee : 0);
+
+  document.getElementById("total").textContent =
+    rupees(subtotal ? subtotal+fee : 0);
+}
+
+// COMMAND PATTERN
+
+class PlaceOrderCommand {
+  execute() {
+    if (activeOrder) {
+      setFoodStatus("Track or cancel the existing order first.");
+      return;
+    }
+
+    if (!cart.size) {
+      setFoodStatus("Add food items before placing an order.");
+      return;
+    }
+
+    let subtotal = 0;
+    cart.forEach((qty,id) => {
+      subtotal += menuItems.find(x=>x.id===id).price*qty;
+    });
+
+    const strategy = strategies[
+      document.getElementById("strategy").value
+    ];
+
+    const fee = strategy.name === "Free" && subtotal < 300
+      ? 30 : strategy.fee;
+
+    activeOrder = {
+      id:orderNumber++,
+      total:subtotal+fee,
+      status:"Order placed"
+    };
+
+    restaurant.notify(activeOrder);
+
+    logFood("Command: PlaceOrderCommand executed.");
+    logFood("Strategy: " + strategy.name + " delivery selected.");
+
+    cart.clear();
+    renderCart();
+
+    document.getElementById("foodStatus").textContent =
+      "Order #" + activeOrder.id + " placed. Total: " +
+      rupees(activeOrder.total);
+  }
+}
+
+class TrackOrderCommand {
+  execute() {
+    if (!activeOrder) {
+      setFoodStatus("No active order to track.");
+      return;
+    }
+
+    activeOrder.status = "Out for delivery";
+    logFood("Command: TrackOrderCommand executed.");
+
+    setFoodStatus("Order #" + activeOrder.id +
+      " - " + activeOrder.status);
+  }
+}
+
+class CancelOrderCommand {
+  execute() {
+    if (!activeOrder) {
+      setFoodStatus("No active order to cancel.");
+      return;
+    }
+
+    logFood("Command: CancelOrderCommand executed.");
+    setFoodStatus("Order #" + activeOrder.id + " cancelled.");
+    activeOrder = null;
+  }
+}
+
+class CommandInvoker {
+  execute(command) {
+    command.execute();
+  }
+}
+
+function executeCommand(action) {
+  const commands = {
+    place:new PlaceOrderCommand(),
+    track:new TrackOrderCommand(),
+    cancel:new CancelOrderCommand()
+  };
+
+  new CommandInvoker().execute(commands[action]);
+}
+
+function setFoodStatus(message) {
+  document.getElementById("foodStatus").textContent = message;
+}
+
+renderMenu();
+renderCart();
+
+</script>
+</body>
+</html>
